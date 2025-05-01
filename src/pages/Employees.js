@@ -17,18 +17,34 @@ const Employees = () => {
   }, []);
 
   // Добавить сотрудника
+  const normalizeName = (name) => {
+    return name
+      .trim()
+      .toLowerCase()
+      .split(/\s+/)
+      .sort()
+      .join(" ");
+  };
+  
   const addEmployee = () => {
-    const name = prompt("Введите имя сотрудника:").trim();
-    if (!name) return;
-
-    if (employees.includes(name)) {
+    const input = prompt("Введите имя сотрудника:")?.trim();
+    if (!input) return;
+  
+    const newNormalized = normalizeName(input);
+  
+    const exists = employees.some((existing) => {
+      return normalizeName(existing) === newNormalized;
+    });
+  
+    if (exists) {
       alert("Этот сотрудник уже есть в списке!");
       return;
     }
-
-    const updatedEmployees = [...employees, name]
-      .sort((a, b) => a.localeCompare(b)); // Сортируем по алфавиту
-
+  
+    const updatedEmployees = [...employees, input].sort((a, b) =>
+      a.localeCompare(b)
+    );
+  
     setEmployees(updatedEmployees);
     saveToStorage("employees", updatedEmployees);
   };
